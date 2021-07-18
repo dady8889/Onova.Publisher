@@ -1,21 +1,9 @@
 // Onova.Installer.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+#include "Onova.Installer.h"
+
 using namespace std;
-
-#include <fstream>
-#include <iostream>
-#include <Windows.h>
-
-#define PUBLISHER_DATA_APPNAME_LEN 64
-#define PUBLISHER_DATA_MANIFESTURL_LEN 1024
-#define PUBLISHER_DATA_RESERVED_LEN 1024
-#define PUBLISHER_DATA_LEN (PUBLISHER_DATA_APPNAME_LEN + PUBLISHER_DATA_MANIFESTURL_LEN + PUBLISHER_DATA_RESERVED_LEN)
-
-typedef struct {
-    char AppName[PUBLISHER_DATA_APPNAME_LEN];
-    char ManifestUrl[PUBLISHER_DATA_MANIFESTURL_LEN];
-} PublisherData_t;
 
 int main(int argc, char* argv[])
 {
@@ -71,7 +59,7 @@ int main(int argc, char* argv[])
     // file does not have the publisher data
     if (imageSize == fileSize)
     {
-        cout << "Installer does not contain any data." << endl;
+        cerr << "Installer does not contain any data." << endl;
         return 1;
     }
 
@@ -98,5 +86,72 @@ int main(int argc, char* argv[])
     cout << data->ManifestUrl << endl;
 #endif
 
+    // read the manifest
+    ManifestMap manifestMap;
+    
+    if (!ParseManifest(data->ManifestUrl, manifestMap))
+    {
+        cerr << "Could not parse the manifest." << endl;
+        return 1;
+    }
+
+#ifndef NDEBUG
+    // print manifest data
+    for (auto iter = manifestMap.begin(); iter != manifestMap.end(); iter++)
+    {
+        cout << "Version: " << iter->first << " URL: " << iter->second << endl;
+    }
+#endif
+
     return 0;
+}
+
+bool ParseManifest(char* manifestUrl, ManifestMap &manifestMap)
+{
+    cpr::Response r = cpr::Get(
+        cpr::Url{ manifestUrl }
+    );
+
+    if (r.status_code == 0)
+    {
+        cerr << r.error.message << endl;
+        return false;
+    }
+    else if (r.status_code >= 400)
+    {
+        cerr << "Error " << r.status_code << " making request." << endl;
+        return false;
+    }
+
+    if (r.text.empty())
+    {
+        cerr << "Manifest is empty." << endl;
+        return false;
+    }
+
+    string line;
+    stringstream ss(r.text);
+    
+    while (getline(ss, line))
+    {
+        int firstPos = line.find(' ');
+        if (firstPos == string::npos)
+        {
+            cerr << "Manifest contains format errors." << endl;
+            return false;
+        }
+
+        string version = line.substr(0, firstPos);
+
+        // allow other parameters in manifest
+        int secondPos = line.find(' ');
+        if (secondPos == string::npos)
+            secondPos = line.length() - 1;
+
+        string url = line.substr(firstPos + 1, secondPos);
+
+        manifestMap.insert(pair<string, string>(version, url));
+    }
+
+    return true;
 }

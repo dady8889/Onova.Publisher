@@ -90,12 +90,19 @@
     <OutDir>bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>obj\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
+  <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <VcpkgUseStatic>true</VcpkgUseStatic>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -110,6 +117,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,6 +156,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Onova.Installer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\abi_prefix.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\abi_suffix.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\config.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\connect.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\coroutine.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\file_read_stream.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\handshake.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\http_read_stream.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\parsers.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\http.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\impl\http.ipp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\impl\istreambuf.ipp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\impl\option_set.ipp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\impl\url.ipp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\istream.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\istreambuf.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\option_set.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\read_stream.hpp" />
+    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\url.hpp" />
+    <ClInclude Include="Onova.Installer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
