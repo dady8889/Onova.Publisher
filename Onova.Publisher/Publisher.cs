@@ -82,7 +82,7 @@ namespace Onova.Publisher
         public bool AppendManifest()
         {
             var manifestFile = Path.Combine(ReleaseFolder, PublisherConstant.ManifestFile);
-            var manifestLine = $"{AppVersion} {ReleaseFileName}";
+            var manifestLine = $"{AppVersion} {ReleaseFileName}\n";
 
             try
             {
