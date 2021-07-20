@@ -164,6 +164,7 @@
     <ClInclude Include="Onova.Installer.h" />
     <ClInclude Include="StringUtils.h" />
     <ClInclude Include="unzip.h" />
+    <ClInclude Include="WinReg.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

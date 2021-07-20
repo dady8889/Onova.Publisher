@@ -32,5 +32,8 @@
     <ClInclude Include="unzip.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WinReg.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

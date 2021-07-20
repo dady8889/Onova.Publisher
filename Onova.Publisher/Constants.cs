@@ -14,7 +14,7 @@
     static class PublisherConstant
     {
         public const string ManifestFile = "MANIFEST";
-        public const string OutputFolder = "Releases";
-        public const string InstallerName = "Setup.exe";
+        public const string OutputFolder = "OnovaPublish";
+        public const string InstallerName = "websetup.exe";
     }
 }
