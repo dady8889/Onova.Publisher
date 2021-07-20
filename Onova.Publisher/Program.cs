@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.IO.Compression;
 
 namespace Onova.Publisher
 {
@@ -13,8 +12,8 @@ namespace Onova.Publisher
         /// <param name="version">Version in format major.minor[.build[.revision]].</param>
         /// <param name="url">URL to web where the manifest resides. Maximum 1024 characters.</param>
         /// <param name="target">Folder which will get packed into a zip.</param>
-        /// <param name="output">Output folder which will contain the Releases folder. This folder will contain the updated manifest file, zip and installer.</param>
-        static int Main(string name, string version, string url, string target, string output)
+        /// <param name="output">Output folder which will contain the publish folder. Publish folder will contain the updated manifest file, zip and installer.</param>
+        static int Main(string name, string version, string url, string target, string output = ".")
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(version) || 
                 string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(target) || 
@@ -62,14 +61,20 @@ namespace Onova.Publisher
 
             var publisher = new Publisher(name, version, url, target, output);
 
-            if (!publisher.CreateZip())
-                return 1;
+            try
+            {
+                if (publisher.CheckVersionPublished())
+                    return 1;
 
-            if (!publisher.RebuildManifest())
+                publisher.CreateZip();
+                publisher.RebuildManifest();
+                publisher.CreateInstaller();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
                 return 1;
-
-            if (!publisher.CreateInstaller())
-                return 1;
+            }
 
             Console.WriteLine($"Successfully published {name} version {version} into {publisher.ReleaseFileName}.");
 

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Onova.Publisher
 {
@@ -20,8 +20,18 @@ namespace Onova.Publisher
         public string ReleaseFileName { get; }
         public string ReleaseFilePath { get; }
 
+        public string PublisherDirectory { get; }
+        public string InstallerPath { get; }
+
         public Publisher(string appName, string appVersion, string manifestUrl, string targetFolder, string outputFolder)
         {
+            // append the manifest file to url, if not part of it
+            if (!manifestUrl.EndsWith(PublisherConstant.ManifestFile))
+            {
+                manifestUrl = manifestUrl.TrimEnd('/');
+                manifestUrl += "/" + PublisherConstant.ManifestFile;
+            }
+
             AppName = appName;
             AppVersion = appVersion;
             ManifestUrl = manifestUrl;
@@ -31,9 +41,12 @@ namespace Onova.Publisher
             ReleaseFolder = Path.Combine(OutputFolder, PublisherConstant.OutputFolder);
             ReleaseFileName = ReleasifyName(AppName, AppVersion);
             ReleaseFilePath = Path.Combine(ReleaseFolder, ReleaseFileName);
+
+            PublisherDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            InstallerPath = Path.Combine(PublisherDirectory, InstallerConstant.InstallerName);
         }
 
-        public bool CreateZip()
+        public bool CheckVersionPublished()
         {
             // check output directory
             if (!Directory.Exists(ReleaseFolder))
@@ -43,43 +56,27 @@ namespace Onova.Publisher
             if (File.Exists(ReleaseFilePath))
             {
                 Console.WriteLine($"WARNING: File {ReleaseFileName} will be overwritten.");
-                Console.WriteLine($"Press ENTER to continue or ESC to cancel.");
-
-                ConsoleKeyInfo keyinfo;
-                do
-                {
-                    keyinfo = Console.ReadKey();
-
-                    if (keyinfo.Key == ConsoleKey.Enter)
-                        break;
-                    else if (keyinfo.Key == ConsoleKey.Escape)
-                    {
-                        Console.WriteLine($"AAborting."); // the first A gets flushed
-                        return false;
-                    }
-                } while (true);
-
+                Console.WriteLine("Resuming in 3 seconds...");
+                Thread.Sleep(3000);
                 File.Delete(ReleaseFilePath);
-
-                // TODO: rebuild MANIFEST file on overwrite
             }
 
-            // create zip
+            return false;
+        }
+
+        public void CreateZip()
+        {
             try
             {
                 ZipFile.CreateFromDirectory(TargetFolder, ReleaseFilePath);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Cannot create zip file.");
-                Console.WriteLine(ex);
-                return false;
+                throw new Exception("Cannot create zip file.", ex);
             }
-
-            return true;
         }
 
-        public bool RebuildManifest()
+        public void RebuildManifest()
         {
             var manifestFile = Path.Combine(ReleaseFolder, PublisherConstant.ManifestFile);
 
@@ -96,14 +93,11 @@ namespace Onova.Publisher
                 var name = new string(fileName.Take(pos).ToArray());
                 var version = new string(fileName.Skip(pos + 1).ToArray());
 
-                if (!AppendManifest(textWriter, version, ReleasifyName(name, version)))
-                    return false;
+                AppendManifest(textWriter, version, ReleasifyName(name, version));
             }
-
-            return true;
         }
 
-        private bool AppendManifest(TextWriter writer, string appVersion, string fileName)
+        private void AppendManifest(TextWriter writer, string appVersion, string fileName)
         {
             var manifestLine = $"{appVersion} {fileName}\n";
 
@@ -113,12 +107,8 @@ namespace Onova.Publisher
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Cannot write to manifest.");
-                Console.WriteLine(ex);
-                return false;
+                throw new Exception("Cannot write to manifest.", ex);
             }
-
-            return true;
         }
 
         private string ReleasifyName(string name, string version)
@@ -126,25 +116,22 @@ namespace Onova.Publisher
             return $"{name.Replace(' ', '-')}-{version}.zip";
         }
 
-        public bool CreateInstaller()
+        public void CreateInstaller()
         {
-            if (!File.Exists(InstallerConstant.InstallerName))
+            if (!File.Exists(InstallerPath))
             {
-                Console.WriteLine("Publisher cannot find the template installer.");
-                return false;
+                throw new Exception("Publisher cannot find the template installer.");
             }
 
             var installerPath = Path.Combine(ReleaseFolder, PublisherConstant.InstallerName);
 
             try
             {
-                File.Copy(InstallerConstant.InstallerName, installerPath, true);
+                File.Copy(InstallerPath, installerPath, true);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Cannot copy the installer.");
-                Console.WriteLine(ex);
-                return false;
+                throw new Exception("Cannot copy the installer.", ex);
             }
 
             var packedAppName = new byte[InstallerConstant.AppNameLength];
@@ -161,8 +148,6 @@ namespace Onova.Publisher
                 bw.Write(packedManifestUrl);
                 bw.Write(packedReserved);
             }
-
-            return true;
         }
     }
 }
