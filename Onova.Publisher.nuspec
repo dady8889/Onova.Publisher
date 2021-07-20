@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Onova.Publisher</id>
+    <title>Onova.Publisher</title>
+    <version>1.0.0</version>
+    <authors>dady8889</authors>
+    <owners>dady8889</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Provides publishing support for applications using Onova.</description>
+    <projectUrl>https://github.com/dady8889/Onova.Publisher</projectUrl>
+    <license type="expression">LGPL-2.1-only</license>
+    <licenseUrl>https://licenses.nuget.org/LGPL-2.1-only</licenseUrl>
+    <dependencies>
+      <group targetFramework="net5.0" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="Onova.Publisher\bin\Release\net5.0\**" target="tools/" exclude="*.vshost.*"/>
+  </files>
+</package>
