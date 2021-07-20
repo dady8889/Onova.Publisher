@@ -18,67 +18,19 @@
     <ClCompile Include="Onova.Installer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="unzip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\abi_prefix.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\abi_suffix.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\config.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\connect.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\coroutine.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\file_read_stream.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\handshake.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\http_read_stream.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\detail\parsers.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\http.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\impl\http.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\impl\istreambuf.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\impl\option_set.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\impl\url.ipp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\istream.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\istreambuf.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\option_set.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\read_stream.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Downloads\urdl-0.1\urdl-0.1\include\urdl\url.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Onova.Installer.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StringUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unzip.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

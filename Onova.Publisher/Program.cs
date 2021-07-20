@@ -65,7 +65,7 @@ namespace Onova.Publisher
             if (!publisher.CreateZip())
                 return 1;
 
-            if (!publisher.AppendManifest())
+            if (!publisher.RebuildManifest())
                 return 1;
 
             if (!publisher.CreateInstaller())

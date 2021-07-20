@@ -29,7 +29,7 @@ namespace Onova.Publisher
             OutputFolder = outputFolder;
 
             ReleaseFolder = Path.Combine(OutputFolder, PublisherConstant.OutputFolder);
-            ReleaseFileName = $"{AppName.Replace(' ', '-')}-{AppVersion}.zip";
+            ReleaseFileName = ReleasifyName(AppName, AppVersion);
             ReleaseFilePath = Path.Combine(ReleaseFolder, ReleaseFileName);
         }
 
@@ -79,14 +79,37 @@ namespace Onova.Publisher
             return true;
         }
 
-        public bool AppendManifest()
+        public bool RebuildManifest()
         {
             var manifestFile = Path.Combine(ReleaseFolder, PublisherConstant.ManifestFile);
-            var manifestLine = $"{AppVersion} {ReleaseFileName}\n";
+
+            using var writer = new FileStream(manifestFile, FileMode.Create, FileAccess.Write);
+            writer.SetLength(0);
+
+            using var textWriter = new StreamWriter(writer);
+            
+            foreach (var zipPath in Directory.GetFiles(ReleaseFolder, "*.zip"))
+            {
+                var fileName = Path.GetFileNameWithoutExtension(zipPath);
+                var pos = fileName.LastIndexOf('-');
+
+                var name = new string(fileName.Take(pos).ToArray());
+                var version = new string(fileName.Skip(pos + 1).ToArray());
+
+                if (!AppendManifest(textWriter, version, ReleasifyName(name, version)))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private bool AppendManifest(TextWriter writer, string appVersion, string fileName)
+        {
+            var manifestLine = $"{appVersion} {fileName}\n";
 
             try
             {
-                File.AppendAllText(manifestFile, manifestLine);
+                writer.Write(manifestLine);
             }
             catch (Exception ex)
             {
@@ -96,6 +119,11 @@ namespace Onova.Publisher
             }
 
             return true;
+        }
+
+        private string ReleasifyName(string name, string version)
+        {
+            return $"{name.Replace(' ', '-')}-{version}.zip";
         }
 
         public bool CreateInstaller()
