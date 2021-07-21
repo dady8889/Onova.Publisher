@@ -1,4 +1,5 @@
 # Onova.Publisher - Like Squirrel but Simpler™
+[![Version](https://img.shields.io/nuget/v/Onova.Publisher.svg)](https://nuget.org/packages/Onova.Publisher)  
 
 It has been years since Squirrel.Windows was deprecated, with no real modern replacement.
 This project aims to replace the basic functionality of Squirrel.Windows.
