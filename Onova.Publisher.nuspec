@@ -9,13 +9,13 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Provides publishing support for applications using Onova.</description>
     <projectUrl>https://github.com/dady8889/Onova.Publisher</projectUrl>
-    <license type="expression">LGPL-2.1-only</license>
-    <licenseUrl>https://licenses.nuget.org/LGPL-2.1-only</licenseUrl>
+    <license type="expression">MIT</license>
     <dependencies>
       <group targetFramework="net5.0" />
+      <group targetFramework="net6.0" />
     </dependencies>
   </metadata>
   <files>
-    <file src="Onova.Publisher\bin\Release\net5.0\**" target="tools/" exclude="*.vshost.*"/>
+    <file src="Onova.Publisher\publish\**" target="tools/"/>
   </files>
 </package>
