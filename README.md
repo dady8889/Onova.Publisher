@@ -131,6 +131,6 @@ The project uses following licensed works:
 
 * unzip.h unzip.cpp - Lucian Wischik, Jean-Loup Gailly, Mark Adler, zlib
 * WinReg.hpp - Giovanni Dicanio
-* [cpr](https://whoshuu.github.io/cpr/)
+* [cpr](https://whoshuu.github.io/cpr/) (installed using vcpkg)
 
 My provided code is licensed under the MIT license.
