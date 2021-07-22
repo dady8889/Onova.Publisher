@@ -7,7 +7,7 @@ The basis of this project is the great [Onova update library](https://github.com
 However, Onova is unaware of how the application got installed on the computer.
 This fact can be an upside for some, but having different installer/updater can be cumbersome.
 
-# Introduction
+## Introduction
 
 **Onova.Publisher is a tool that allows you to create new packages directly from Visual Studio Package Manager Console.**  
 The package will be targeted for the [Onova WebPackageResolver](https://github.com/Tyrrrz/Onova#webpackageresolver).  
@@ -20,7 +20,7 @@ The most important part is the installer - in comparison to Squirrel, which pack
 
 Enough talking, let us show you what we got.
 
-# Documentation
+## Documentation
 The only **requirement** for Onova.Publisher to work is that your project **targets .NET 5** *(actually, it may work for other .NET Core versions but I have not tested it)*.
 
 Let us assume you have built and dotnet published your app into the *\publish* folder of your solution.
@@ -36,11 +36,13 @@ Usage:
   Onova.Publisher [options]
 
 Options:
-  --name <name>        Your application's name (name of executable without extension). Maximum 64 characters.
-  --version <version>  Version in format major.minor[.build[.revision]].
-  --url <url>          URL to web where the manifest resides. Maximum 1024 characters.
-  --target <target>    Folder which will get packed into a zip.
-  --output <output>    Output folder which will contain the publish folder. Publish folder will contain the updated manifest file, zip and installer. [default: .]
+  -n, --name <name>             Your application's name (name of executable without extension). Maximum 64 characters.
+  -v, --version <version>       Version in format major.minor[.build[.revision]].
+  -u, --url <url>               URL to web where the manifest resides. Maximum 1024 characters.
+  -i, --in, --target <target>   Folder which will get packed into a zip.
+  -o, --out, --output <output>  Output folder which will contain the publish folder. Publish folder will contain the updated manifest file, zip and installer. [default: .]
+  --no-releasenotes, --no-rn    Disables generation of an empty release note (.rn) file.
+  -?, -h, --help                Show help and usage information
 ```
 
 After reading the documentation, let's try publishing our DummyApp version 1.2.3 to our web server at https://dummy.com/files/.
@@ -58,9 +60,12 @@ The contents of the folder are following:
 ```
     MANIFEST
     DummyApp-1.2.3.zip
+    DummyApp-1.2.3.rn
     websetup.exe
 ```
 The MANIFEST file will contain one line, *1.2.3 DummyApp-1.2.3.zip*. This file is precisely formatted for the [Onova WebPackageResolver](https://github.com/Tyrrrz/Onova#webpackageresolver).
+
+The .rn file is an empty text file, in which you can add release notes for your release. For more information, check out [Onova.ReleaseNotes](https://github.com/dady8889/Onova.ReleaseNotes).
 
 You can now upload the files to the desired location. We will assume you have implemented the updating in your application like this:
 ```csharp
@@ -104,30 +109,30 @@ Currently, the installed app **will not** be started after the installation.
 
 If you want to uninstall the application, you can use the standard Windows uninstall procedure using Settings, or you can directly execute the uninstall.exe in the application base directory. *Also, in comparison with Squirrel, your application will have an icon visible in the installed programs menu, and the uninstaller leaves no installed files behind.*
 
-# Missing (planned) features
-- [ ] Changelog support
+## Missing (planned) features
+- [x] Changelog support
 - [ ] Code signing and timestamping
 - [ ] Start menu link in publisher name folder
 - [ ] Run app after installation
-- [ ] Powershell bindings
+- [ ] Silent install
 
-# Missing (not planned) features
+## Missing (not planned) features
 * Bigger customization eg. icons, custom UI
 * Dedicated non-web installer
 * Other OS support or backporting to older .NET versions
 * Bootstrapping
 
-# Known issues
+## Known issues
 - [ ] No wiki
 - [ ] No tests
 - [ ] App name and URL allows only ANSI encoding
 - [ ] The installer code is a bit inconsistent
 
-# Contributions
+## Contributions
 I am open to suggestions, PRs, bug reports.
 Any contribution is welcome.
 
-# Licensing
+## Licensing
 The project uses following licensed works:
 
 * unzip.h unzip.cpp - Lucian Wischik, Jean-Loup Gailly, Mark Adler, zlib

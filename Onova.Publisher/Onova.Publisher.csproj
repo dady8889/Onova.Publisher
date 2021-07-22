@@ -5,7 +5,20 @@
     <TargetFramework>net5.0</TargetFramework>
     <Authors>dady8889</Authors>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <PackageReleaseNotes>* Rewrite command line app
+* Implement generation of release note files for Onova.ReleaseNotes, can disable with --no-rn
+* More command aliases and better help
+</PackageReleaseNotes>
+    <Version>1.1.0</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="publish\**" />
+    <EmbeddedResource Remove="publish\**" />
+    <None Remove="publish\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="NuGet.CommandLine" Version="5.9.1">
@@ -13,7 +26,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
-    <PackageReference Include="System.CommandLine.DragonFruit" Version="0.3.0-alpha.21216.1" />
     <PackageReference Include="System.CommandLine.Rendering" Version="0.3.0-alpha.21216.1" />
   </ItemGroup>
 

@@ -22,6 +22,8 @@ namespace Onova.Publisher
 
         public string PublisherDirectory { get; }
         public string InstallerPath { get; }
+        
+        public bool GenerateReleaseNotes { get; private set; }
 
         public Publisher(string appName, string appVersion, string manifestUrl, string targetFolder, string outputFolder)
         {
@@ -44,6 +46,8 @@ namespace Onova.Publisher
 
             PublisherDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             InstallerPath = Path.Combine(PublisherDirectory, InstallerConstant.InstallerName);
+
+            GenerateReleaseNotes = true;
         }
 
         public bool CheckVersionPublished()
@@ -111,9 +115,14 @@ namespace Onova.Publisher
             }
         }
 
-        private string ReleasifyName(string name, string version)
+        private string ReleasifyName(string name, string version, bool withExtension = true)
         {
-            return $"{name.Replace(' ', '-')}-{version}.zip";
+            string relName = $"{name.Replace(' ', '-')}-{version}";
+
+            if (withExtension)
+                relName += ".zip";
+
+            return relName;
         }
 
         public void CreateInstaller()
@@ -147,6 +156,32 @@ namespace Onova.Publisher
                 bw.Write(packedAppName);
                 bw.Write(packedManifestUrl);
                 bw.Write(packedReserved);
+            }
+        }
+
+        public void DisableReleaseNotes()
+        {
+            GenerateReleaseNotes = false;
+        }
+
+        public void CreateEmptyReleaseNote()
+        {
+            if (!GenerateReleaseNotes)
+                return;
+
+            try
+            {
+                var rnPath = Path.Combine(ReleaseFolder, ReleasifyName(AppName, AppVersion, false) + ".rn");
+
+                // if the rn file already exists, just skip
+                if (File.Exists(rnPath))
+                    return;
+
+                File.Create(rnPath);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Cannot create release note file.", ex);
             }
         }
     }

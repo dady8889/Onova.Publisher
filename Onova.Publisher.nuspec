@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>Onova.Publisher</id>
     <title>Onova.Publisher</title>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <authors>dady8889</authors>
     <owners>dady8889</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Provides publishing support for applications using Onova.</description>
     <projectUrl>https://github.com/dady8889/Onova.Publisher</projectUrl>
     <license type="expression">MIT</license>
+    <tags>onova installer publisher updater tool</tags>
     <dependencies>
       <group targetFramework="net5.0" />
       <group targetFramework="net6.0" />
     </dependencies>
+    <releaseNotes>
+    * Rewrite command line app
+    * Implement generation of release note files for Onova.ReleaseNotes, can disable with --no-rn
+    * More command aliases and better help
+    </releaseNotes>
   </metadata>
   <files>
     <file src="Onova.Publisher\publish\**" target="tools/"/>
