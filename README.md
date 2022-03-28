@@ -1,5 +1,7 @@
 # Onova.Publisher - Like Squirrel but Simpler™
-[![Version](https://img.shields.io/nuget/v/Onova.Publisher.svg)](https://nuget.org/packages/Onova.Publisher)  
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://vshymanskyy.github.io/StandWithUkraine)
+[![Version](https://img.shields.io/nuget/v/Onova.Publisher.svg)](https://nuget.org/packages/Onova.Publisher)
+
 
 It has been years since Squirrel.Windows had been deprecated, without a modern replacement.
 This project aims to provide the basic functionality of Squirrel.Windows.
@@ -123,7 +125,7 @@ If you want to uninstall the application, you can use the standard Windows unins
 - [ ] No tests
 - [ ] App name and URL allows only ANSI encoding
 - [ ] The installer code is a bit inconsistent
-- [ ] MANIFEST rebuilding sorts alphabetically, not semantically
+- [x] MANIFEST rebuilding sorts alphabetically, not semantically
 
 ## Building
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -88,17 +89,26 @@ namespace Onova.Publisher
             writer.SetLength(0);
 
             using var textWriter = new StreamWriter(writer);
-            
+
+            var files = new List<(string FileName, Version Version)>();
+
             foreach (var zipPath in Directory.GetFiles(ReleaseFolder, "*.zip"))
             {
-                var fileName = Path.GetFileNameWithoutExtension(zipPath);
-                var pos = fileName.LastIndexOf('-');
+                var fileName = Path.GetFileName(zipPath);
+                var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(zipPath);
+                var pos = fileNameWithoutExtension.LastIndexOf('-');
 
-                var name = new string(fileName.Take(pos).ToArray());
-                var version = new string(fileName.Skip(pos + 1).ToArray());
+                // var name = new string(fileName.Take(pos).ToArray());
+                var version = new string(fileNameWithoutExtension.Skip(pos + 1).ToArray());
 
-                AppendManifest(textWriter, version, ReleasifyName(name, version));
+                if (!Version.TryParse(version, out Version parsedVersion))
+                    throw new Exception($"Filename {fileName} contains invalid version.");
+
+                files.Add((fileName, parsedVersion));
             }
+
+            foreach (var file in files.OrderBy(x => x.Version))
+                AppendManifest(textWriter, file.Version.ToString(), file.FileName);
         }
 
         private void AppendManifest(TextWriter writer, string appVersion, string fileName)
