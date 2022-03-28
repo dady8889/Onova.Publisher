@@ -1,31 +1,27 @@
 # Onova.Publisher - Like Squirrel but Simpler™
 [![Version](https://img.shields.io/nuget/v/Onova.Publisher.svg)](https://nuget.org/packages/Onova.Publisher)  
 
-It has been years since Squirrel.Windows was deprecated, with no real modern replacement.
-This project aims to replace the basic functionality of Squirrel.Windows.
-The basis of this project is the great [Onova update library](https://github.com/Tyrrrz/Onova), which provides seamless updating of your application.
-However, Onova is unaware of how the application got installed on the computer.
-This fact can be an upside for some, but having different installer/updater can be cumbersome.
+It has been years since Squirrel.Windows had been deprecated, without a modern replacement.
+This project aims to provide the basic functionality of Squirrel.Windows.
+We build upon the [Onova update library](https://github.com/Tyrrrz/Onova), which provides seamless update process for your application.
+One of Onova's upsides is the unawareness of how the application has been installed.
+However, to make the process of installing and updating as intuitive as possible, it is useful to make them depend on each other.
 
 ## Introduction
 
 **Onova.Publisher is a tool that allows you to create new packages directly from Visual Studio Package Manager Console.**  
-The package will be targeted for the [Onova WebPackageResolver](https://github.com/Tyrrrz/Onova#webpackageresolver).  
+The package will be targeted for usage by [WebPackageResolver](https://github.com/Tyrrrz/Onova#webpackageresolver).  
 Publisher also takes care of creating the manifest file, which is consumed by the updater.  
 
-The most important part is the installer - in comparison to Squirrel, which packed the latest version of your application into the installer itself, Onova.Publisher packs only the information necessary to download the latest version from your deployment server.   This type of installer is also known as a web installer. The upsides and downsides are obvious, the installer is small and you don't need to update it every time you update your app (also, it made the programming a lot simpler).  
+The most important part is the installer - in comparison to Squirrel, which packed the latest version of your application into the installer itself, Onova.Publisher packs only the information necessary to download the latest version from your deployment server.   This type of installer is also known as a web installer. The major upsides are that the installer is small and you don't need to update it with your app.  
 
-**Like Squirrel, Onova.Publisher builds an installer which will install your application to the local appdata folder, without needing admin privileges.**
-
-
-Enough talking, let us show you what we got.
+**Like Squirrel, Onova.Publisher builds an installer which will install your application to the local appdata folder, without needing admin privileges.**  
 
 ## Documentation
 The only **requirement** for Onova.Publisher to work is that your project **targets .NET 5** *(actually, it may work for other .NET Core versions but I have not tested it)*.
 
 Let us assume you have built and dotnet published your app into the *\publish* folder of your solution.
 Select your startup project as the default project in the Package Manager Console.
-Now, let's check out the Onova.Publisher command:
 
 ```
 PM> Onova.Publisher -h
@@ -45,7 +41,7 @@ Options:
   -?, -h, --help                Show help and usage information
 ```
 
-After reading the documentation, let's try publishing our DummyApp version 1.2.3 to our web server at https://dummy.com/files/.
+After reading the tool's help, let's try publishing our DummyApp version 1.2.3 to our web server at https://dummy.com/files/.
 
 ```
 PM> Onova.Publisher --name DummyApp --version 1.2.3 --url https://dummy.com/files/ --target publish\
@@ -63,11 +59,13 @@ The contents of the folder are following:
     DummyApp-1.2.3.rn
     websetup.exe
 ```
-The MANIFEST file will contain one line, *1.2.3 DummyApp-1.2.3.zip*. This file is precisely formatted for the [Onova WebPackageResolver](https://github.com/Tyrrrz/Onova#webpackageresolver).
+The MANIFEST file will contain one line, *1.2.3 DummyApp-1.2.3.zip*. This file is precisely formatted for [WebPackageResolver](https://github.com/Tyrrrz/Onova#webpackageresolver).
 
 The .rn file is an empty text file, in which you can add release notes for your release. For more information, check out [Onova.ReleaseNotes](https://github.com/dady8889/Onova.ReleaseNotes).
 
-You can now upload the files to the desired location. We will assume you have implemented the updating in your application like this:
+You can now upload the files to the desired location.  
+
+Continuing, we will assume you have implemented the updating in your application as:
 ```csharp
 using (var mgr = new UpdateManager(new WebPackageResolver("https://dummy.com/files/MANIFEST"), new ZipPackageExtractor()))
 {
@@ -75,16 +73,14 @@ using (var mgr = new UpdateManager(new WebPackageResolver("https://dummy.com/fil
   ...
 }
 ```
-For the sake of simplicity of the installer, I am standardising the name of the manifest file as MANIFEST. *(however, if it is a big problem, it could be made as a parameter)*
-Onova itself does not require any specific manifest name.
 
-You can now try creating another version, by running similar command:
+You can try creating another version, by running a similar command:
 ```
 PM> Onova.Publisher --name DummyApp --version 1.3.0 --url https://dummy.com/files/ --target publish\
 ```
-Now, you should just need to upload the new zip file and update the latest MANIFEST entry. *(unless a new version of the publisher had come out in the meantime, in which case an update for the installer may be issued)*
+Now, you should just need to upload the new zip file and update the latest MANIFEST entry. *(unless a new version of the publisher had come out in the meantime, in which case an update for the installer may be required)*
 
-After everything is in place, let's try downloading and running the *webinstaller.exe* of our application.
+After uploading the files, let's try downloading and running the *webinstaller.exe* of our application.
 The installer is written in C++ and statically linked for x86, compiled with MSVC, which means it should run on any reasonable Windows installation.
 Running the installer will greet us with a console window with the following contents:
 ```
@@ -127,6 +123,7 @@ If you want to uninstall the application, you can use the standard Windows unins
 - [ ] No tests
 - [ ] App name and URL allows only ANSI encoding
 - [ ] The installer code is a bit inconsistent
+- [ ] MANIFEST rebuilding sorts alphabetically, not semantically
 
 ## Contributions
 I am open to suggestions, PRs, bug reports.
@@ -137,6 +134,6 @@ The project uses following licensed works:
 
 * unzip.h unzip.cpp - Lucian Wischik, Jean-Loup Gailly, Mark Adler, zlib
 * WinReg.hpp - Giovanni Dicanio
-* [cpr](https://whoshuu.github.io/cpr/) (installed using vcpkg)
+* [cpr](https://github.com/libcpr/cpr)
 
 My provided code is licensed under the MIT license.
