@@ -125,6 +125,19 @@ If you want to uninstall the application, you can use the standard Windows unins
 - [ ] The installer code is a bit inconsistent
 - [ ] MANIFEST rebuilding sorts alphabetically, not semantically
 
+## Building
+
+```sh
+git clone --recurse-submodules https://github.com/dady8889/Onova.Publisher.git
+cd Onova.Publisher
+cd vcpkg
+./bootstrap-vcpkg.bat
+./vcpkg integrate project --triplet x86-windows-static # follow instructions
+./vcpkg install cpr:x86-windows-static
+
+# Build Solution in VS2022
+```
+
 ## Contributions
 I am open to suggestions, PRs, bug reports.
 Any contribution is welcome.
