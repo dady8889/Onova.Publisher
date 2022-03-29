@@ -155,9 +155,8 @@ namespace Onova.Publisher
 
             var packedAppName = new byte[InstallerConstant.AppNameLength];
             var packedManifestUrl = new byte[InstallerConstant.ManifestUrlLength];
-            var packedReserved = new byte[InstallerConstant.ReservedLength];
 
-            Encoding.ASCII.GetBytes(AppName).CopyTo(packedAppName, 0);
+            Encoding.Unicode.GetBytes(AppName).CopyTo(packedAppName, 0);
             Encoding.ASCII.GetBytes(ManifestUrl).CopyTo(packedManifestUrl, 0);
 
             using (var fileStream = new FileStream(installerPath, FileMode.Append, FileAccess.Write, FileShare.None))
@@ -165,7 +164,6 @@ namespace Onova.Publisher
             {
                 bw.Write(packedAppName);
                 bw.Write(packedManifestUrl);
-                bw.Write(packedReserved);
             }
         }
 

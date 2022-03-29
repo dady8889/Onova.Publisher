@@ -2,6 +2,7 @@
 using System.IO;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.Text;
 
 namespace Onova.Publisher
 {
@@ -10,11 +11,13 @@ namespace Onova.Publisher
 
         static int Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.Unicode;
+
             var rootCommand = new RootCommand
             {
                 new Option<string>(
                     new [] { "--name", "-n" },
-                    "Your application's name (name of executable without extension). Maximum 64 characters.")
+                    "Your application's name (name of executable without extension). Maximum 31 characters.")
                 { IsRequired = false },
 
                 new Option<string>(
@@ -24,7 +27,7 @@ namespace Onova.Publisher
 
                 new Option<string>(
                     new [] { "--url", "-u" },
-                    "URL to web where the manifest resides. Maximum 1024 characters.")
+                    "URL to web where the manifest resides. Maximum 1023 characters.")
                 { IsRequired = false },
 
                 new Option<string>(
@@ -60,9 +63,9 @@ namespace Onova.Publisher
                 return 1;
             }
 
-            if (name.Length > InstallerConstant.AppNameLength)
+            if (Encoding.Unicode.GetBytes(name).Length >= InstallerConstant.AppNameLength)
             {
-                Console.Error.WriteLine("App name is invalid.");
+                Console.Error.WriteLine("App name is too long.");
                 return 1;
             }
 
@@ -72,22 +75,22 @@ namespace Onova.Publisher
                 return 1;
             }
 
-            if (url.Length > InstallerConstant.ManifestUrlLength)
+            if (url.Length >= InstallerConstant.ManifestUrlLength)
             {
                 
-                Console.Error.WriteLine("Manifest URL is invalid.");
+                Console.Error.WriteLine("Manifest URL is too long.");
                 return 1;
             }
 
             if (!Directory.Exists(target))
             {
-                Console.Error.WriteLine("Target folder is invalid.");
+                Console.Error.WriteLine("Target folder not found.");
                 return 1;
             }
 
             if (!Directory.Exists(output))
             {
-                Console.Error.WriteLine("Output folder is invalid.");
+                Console.Error.WriteLine("Output folder not found.");
                 return 1;
             }
 

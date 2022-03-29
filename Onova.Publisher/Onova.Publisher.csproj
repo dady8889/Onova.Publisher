@@ -12,6 +12,7 @@
 * More command aliases and better help
 </PackageReleaseNotes>
     <Version>1.1.0</Version>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 
   <ItemGroup>

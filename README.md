@@ -123,8 +123,7 @@ If you want to uninstall the application, you can use the standard Windows unins
 ## Known issues
 - [ ] No wiki
 - [ ] No tests
-- [ ] App name and URL allows only ANSI encoding
-- [ ] The installer code is a bit inconsistent
+- [x] App name allows only ANSI encoding
 - [x] MANIFEST rebuilding sorts alphabetically, not semantically
 
 ## Building

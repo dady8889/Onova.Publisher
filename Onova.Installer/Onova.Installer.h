@@ -6,7 +6,11 @@
 #include <filesystem>
 #include <iostream>
 #include <sstream>
+#include <codecvt>
+#include <locale>
 
+#include <fcntl.h>
+#include <io.h>
 #include <Windows.h>
 #include <ShlObj.h>
 
@@ -20,16 +24,15 @@
 #include "WinReg.hpp"
 #include "unzip.h"
 
-#define PUBLISHER_DATA_APPNAME_LEN 64
-#define PUBLISHER_DATA_MANIFESTURL_LEN 1024
-#define PUBLISHER_DATA_RESERVED_LEN 1024
-#define PUBLISHER_DATA_LEN (PUBLISHER_DATA_APPNAME_LEN + PUBLISHER_DATA_MANIFESTURL_LEN + PUBLISHER_DATA_RESERVED_LEN)
+constexpr size_t PUBLISHER_DATA_APPNAME_LEN = (32 * sizeof(wchar_t));
+constexpr size_t PUBLISHER_DATA_MANIFESTURL_LEN = (1024 * sizeof(char));
+constexpr size_t PUBLISHER_DATA_LEN = (PUBLISHER_DATA_APPNAME_LEN + PUBLISHER_DATA_MANIFESTURL_LEN);
 
 using namespace std;
 
 typedef struct {
-    char AppName[PUBLISHER_DATA_APPNAME_LEN];
-    char ManifestUrl[PUBLISHER_DATA_MANIFESTURL_LEN];
+    std::wstring AppName;
+    std::string ManifestUrl;
 } PublisherData_t;
 
 typedef struct {
@@ -45,12 +48,12 @@ bool LoadPublisherData(wstring selfFilePath, PublisherData_t* publisherData);
 bool ParseManifest(string manifestUrl, ManifestMap& manifestMap);
 bool DownloadPackage(string packageUrl, wstring& tempZipPath);
 bool BuildZipURL(string manifestUrl, string packageUrl, string& absoluteUrl);
-bool InstallPackage(string appName, wstring zipPath, wstring& startupFilePath, wstring& baseFolderPath, DWORD& unpackedSize);
+bool InstallPackage(wstring appName, wstring zipPath, wstring& startupFilePath, wstring& baseFolderPath, DWORD& unpackedSize);
 bool GetLocalAppDataFolder(wstring& folderPath);
 bool Unzip(wstring targetZip, wstring targetPath, DWORD& unpackedSize);
-bool LinkStartMenu(string appName, wstring startupFilePath);
-bool CheckInstalled(string appName, bool& installed, UninstallerData_t* uninstallerData);
-bool RegisterApp(string appName, string version, string company, DWORD unpackedSize, wstring installLocation, wstring exeLocation);
+bool LinkStartMenu(wstring appName, wstring startupFilePath);
+bool CheckInstalled(wstring appName, bool& installed, UninstallerData_t* uninstallerData);
+bool RegisterApp(wstring appName, string version, string company, DWORD unpackedSize, wstring installLocation, wstring exeLocation);
 bool SetupUninstaller(wstring selfFilePath, wstring targetFolder);
 bool UninstallApp(wstring selfFilePath, UninstallerData_t* uninstallerData);
-void PrintError(string message);
+void PrintError(wstring message);

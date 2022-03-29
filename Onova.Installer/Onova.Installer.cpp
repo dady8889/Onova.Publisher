@@ -8,13 +8,18 @@ using namespace winreg;
 
 int main(int argc, char* argv[])
 {
+	if (_setmode(_fileno(stdout), _O_WTEXT) == -1)
+	{
+		cout << "WARNING: Your terminal does not support Unicode characters." << endl;
+	}
+
 #ifdef NDEBUG
 	// hide the console window
 	ShowWindow(GetConsoleWindow(), SW_HIDE);
 #endif
 
 #ifndef NDEBUG
-	cout << "Attach debugger" << endl;
+	wcout << "Attach debugger" << endl;
 	system("pause");
 #endif
 
@@ -28,13 +33,13 @@ int main(int argc, char* argv[])
 	PublisherData_t data;
 	if (!LoadPublisherData(selfFilePath, &data))
 	{
-		PrintError("Installer does not contain any data.");
+		PrintError(L"Installer does not contain any data.");
 		return 1;
 	}
 
 #ifndef NDEBUG
-	cout << data.AppName << endl;
-	cout << data.ManifestUrl << endl;
+	wcout << data.AppName << endl;
+	wcout << ConvertAnsiToWide(data.ManifestUrl) << endl;
 #endif
 
 	// check if the app is already installed
@@ -42,7 +47,7 @@ int main(int argc, char* argv[])
 	UninstallerData_t uninstallerData;
 	if (!CheckInstalled(data.AppName, installed, &uninstallerData))
 	{
-		PrintError("Could not check if the app is already installed.");
+		PrintError(L"Could not check if the app is already installed.");
 		return 1;
 	}
 
@@ -53,35 +58,35 @@ int main(int argc, char* argv[])
 		{
 			if (!UninstallApp(selfFilePath, &uninstallerData))
 			{
-				PrintError("Could not uninstall the app.");
+				PrintError(L"Could not uninstall the app.");
 				return 1;
 			}
 
 			return 0;
 		}
 
-		PrintError("The app is already installed.");
+		PrintError(L"The app is already installed.");
 		return 1;
 	}
 
 	// show the window
 	ShowWindow(GetConsoleWindow(), SW_SHOW);
 
-	cout << "Welcome to " << data.AppName << " web install" << endl;
-	cout << "Downloading the latest version..." << endl;
+	wcout << L"Welcome to " << data.AppName << L" web install" << endl;
+	wcout << L"Downloading the latest version..." << endl;
 
 	// read the manifest
 	ManifestMap manifestMap;
 
 	if (!ParseManifest(data.ManifestUrl, manifestMap))
 	{
-		PrintError("Could not parse the manifest.");
+		PrintError(L"Could not parse the manifest.");
 		return 1;
 	}
 
 #ifndef NDEBUG
 	for (auto iter = manifestMap.begin(); iter != manifestMap.end(); iter++)
-		cout << "Version: " << iter->first << " URL: " << iter->second << endl;
+		wcout << L"Version: " << ConvertAnsiToWide(iter->first) << L" URL: " << ConvertAnsiToWide(iter->second) << endl;
 #endif
 
 	// download the newest entry in the manifest
@@ -91,17 +96,17 @@ int main(int argc, char* argv[])
 
 	if (!BuildZipURL(data.ManifestUrl, newestZipUrl, downloadZipUrl))
 	{
-		PrintError("Could not build the zip url.");
+		PrintError(L"Could not build the zip url.");
 		return 1;
 	}
 
-	cout << "Installing version " << newestEntry->first << "..." << endl;
+	wcout << L"Installing version " << ConvertAnsiToWide(newestEntry->first) << L"..." << endl;
 
 	wstring tempZipPath;
 
 	if (!DownloadPackage(downloadZipUrl, tempZipPath))
 	{
-		PrintError("Could not download the zip.");
+		PrintError(L"Could not download the zip.");
 		return 1;
 	}
 
@@ -115,48 +120,48 @@ int main(int argc, char* argv[])
 	wstring baseFolderPath;
 	if (!InstallPackage(data.AppName, tempZipPath, startupFilePath, baseFolderPath, unpackedSize))
 	{
-		PrintError("Could not install the zip.");
+		PrintError(L"Could not install the zip.");
 		return 1;
 	}
 
 #ifndef NDEBUG
-	cout << "Zip unpacked." << endl;
+	wcout << L"Zip unpacked." << endl;
 #endif
 
 	// send link to main menu
 	if (!LinkStartMenu(data.AppName, startupFilePath))
 	{
-		PrintError("Could not link to start menu.");
+		PrintError(L"Could not link to start menu.");
 		return 1;
 	}
 
 #ifndef NDEBUG
-	cout << "Linked to start menu." << endl;
+	wcout << L"Linked to start menu." << endl;
 #endif
 
 	// register the app in registry
 	if (!RegisterApp(data.AppName, newestEntry->first, "", unpackedSize, baseFolderPath, startupFilePath))
 	{
-		PrintError("Could not register the app.");
+		PrintError(L"Could not register the app.");
 		return 1;
 	}
 
 #ifndef NDEBUG
-	cout << "Created registry entry." << endl;
+	wcout << L"Created registry entry." << endl;
 #endif
 
 	// copy the installer and save it as uninstaller
 	if (!SetupUninstaller(selfFilePath, baseFolderPath))
 	{
-		PrintError("Could not setup uninstaller.");
+		PrintError(L"Could not setup uninstaller.");
 		return 1;
 	}
 
 #ifndef NDEBUG
-	cout << "Copied uninstaller." << endl;
+	wcout << L"Copied uninstaller." << endl;
 #endif
 
-	cout << "The app was sucessfully installed." << endl;
+	wcout << L"The app was sucessfully installed." << endl;
 	system("pause");
 
 	return 0;
@@ -203,8 +208,8 @@ bool LoadPublisherData(wstring selfFilePath, PublisherData_t* publisherData)
 
 #ifndef NDEBUG
 	// print sizes
-	cout << "File size: " << fileSize << endl;
-	cout << "Image size: " << imageSize << endl;
+	wcout << L"File size: " << fileSize << endl;
+	wcout << L"Image size: " << imageSize << endl;
 #endif
 
 	// file does not have the publisher data
@@ -221,10 +226,10 @@ bool LoadPublisherData(wstring selfFilePath, PublisherData_t* publisherData)
 	// parse the structure
 	char* pointer = buffer;
 
-	memcpy(publisherData->AppName, pointer, PUBLISHER_DATA_APPNAME_LEN);
+	publisherData->AppName = std::wstring(reinterpret_cast<wchar_t*>(pointer), PUBLISHER_DATA_APPNAME_LEN / sizeof(wchar_t));
 	pointer += PUBLISHER_DATA_APPNAME_LEN;
 
-	memcpy(publisherData->ManifestUrl, pointer, PUBLISHER_DATA_MANIFESTURL_LEN);
+	publisherData->ManifestUrl = std::string(pointer, PUBLISHER_DATA_MANIFESTURL_LEN);
 	pointer += PUBLISHER_DATA_MANIFESTURL_LEN;
 
 	return true;
@@ -238,18 +243,18 @@ bool ParseManifest(string manifestUrl, ManifestMap& manifestMap)
 
 	if (r.status_code == 0)
 	{
-		cerr << r.error.message << endl;
+		wcerr << ConvertAnsiToWide(r.error.message) << endl;
 		return false;
 	}
 	else if (r.status_code >= 400)
 	{
-		cerr << "Error " << r.status_code << " making request." << endl;
+		wcerr << L"Error " << r.status_code << L" making request." << endl;
 		return false;
 	}
 
 	if (r.text.empty())
 	{
-		cerr << "Manifest is empty." << endl;
+		wcerr << L"Manifest is empty." << endl;
 		return false;
 	}
 
@@ -261,7 +266,7 @@ bool ParseManifest(string manifestUrl, ManifestMap& manifestMap)
 		size_t firstPos = line.find(' ');
 		if (firstPos == string::npos)
 		{
-			cerr << "Manifest contains format errors." << endl;
+			wcerr << L"Manifest contains format errors." << endl;
 			return false;
 		}
 
@@ -287,7 +292,7 @@ bool DownloadPackage(string packageUrl, wstring& tempZipPath)
 	size_t lastSegmentPos = packageUrl.find_last_of('/');
 	if (lastSegmentPos == string::npos)
 	{
-		cerr << "URL is not valid." << endl;
+		wcerr << L"URL is not valid." << endl;
 		return false;
 	}
 
@@ -301,12 +306,12 @@ bool DownloadPackage(string packageUrl, wstring& tempZipPath)
 
 	if (r.status_code == 0)
 	{
-		cerr << r.error.message << endl;
+		wcerr << ConvertAnsiToWide(r.error.message) << endl;
 		return false;
 	}
 	else if (r.status_code >= 400)
 	{
-		cerr << "Error " << r.status_code << " making request." << endl;
+		wcerr << L"Error " << r.status_code << L" making request." << endl;
 		return false;
 	}
 
@@ -333,7 +338,7 @@ bool BuildZipURL(string manifestUrl, string packageUrl, string& absoluteUrl)
 		size_t pos = find_nth(manifestUrl, "/", 3);
 		if (pos == string::npos)
 		{
-			cerr << "URL is not valid." << endl;
+			wcerr << L"URL is not valid." << endl;
 			return false;
 		}
 
@@ -348,7 +353,7 @@ bool BuildZipURL(string manifestUrl, string packageUrl, string& absoluteUrl)
 	int lastSegmentPos = manifestUrl.find_last_of('/');
 	if (lastSegmentPos == string::npos)
 	{
-		cerr << "URL is not valid." << endl;
+		wcerr << L"URL is not valid." << endl;
 		return false;
 	}
 
@@ -360,19 +365,19 @@ bool BuildZipURL(string manifestUrl, string packageUrl, string& absoluteUrl)
 	return true;
 }
 
-bool InstallPackage(string appName, wstring zipPath, wstring& startupFilePath, wstring& baseFolderPath, DWORD& unpackedSize)
+bool InstallPackage(wstring appName, wstring zipPath, wstring& startupFilePath, wstring& baseFolderPath, DWORD& unpackedSize)
 {
 	wstring localAppDataPath;
 
 	if (!GetLocalAppDataFolder(localAppDataPath))
 	{
-		cerr << "Could not get local appdata folder." << endl;
+		wcerr << L"Could not get local appdata folder." << endl;
 		return false;
 	}
 
 	wstringstream appBasePathBuilder;
 
-	appBasePathBuilder << localAppDataPath << L"\\" << ConvertAnsiToWide(appName);
+	appBasePathBuilder << localAppDataPath << L"\\" << appName;
 	wstring appBasePath = appBasePathBuilder.str();
 
 	baseFolderPath = appBasePath;
@@ -384,7 +389,7 @@ bool InstallPackage(string appName, wstring zipPath, wstring& startupFilePath, w
 	{
 		if (!filesystem::create_directory(appBasePath))
 		{
-			cerr << "Could not create app base folder." << endl;
+			wcerr << L"Could not create app base folder." << endl;
 			return false;
 		}
 	}
@@ -393,23 +398,23 @@ bool InstallPackage(string appName, wstring zipPath, wstring& startupFilePath, w
 	{
 		if (!filesystem::create_directory(appUnpackPath))
 		{
-			cerr << "Could not create app base data folder." << endl;
+			wcerr << L"Could not create app base data folder." << endl;
 			return false;
 		}
 	}
 
 	if (!Unzip(zipPath, appUnpackPath, unpackedSize))
 	{
-		cerr << "Could not unzip the file." << endl;
+		wcerr << L"Could not unzip the file." << endl;
 		return false;
 	}
 
-	appBasePathBuilder << L"\\" << ConvertAnsiToWide(appName) << ".exe";
+	appBasePathBuilder << L"\\" << appName << ".exe";
 	startupFilePath = appBasePathBuilder.str();
 
 	if (!filesystem::exists(startupFilePath))
 	{
-		cerr << "Startup exe not found." << endl;
+		wcerr << L"Startup exe not found." << endl;
 		return false;
 	}
 
@@ -474,7 +479,7 @@ bool Unzip(wstring targetZip, wstring targetPath, DWORD& unpackedSize)
 	return true;
 }
 
-bool LinkStartMenu(string appName, wstring startupFilePath)
+bool LinkStartMenu(wstring appName, wstring startupFilePath)
 {
 	PWSTR startMenuPath = nullptr;
 
@@ -483,7 +488,7 @@ bool LinkStartMenu(string appName, wstring startupFilePath)
 		return false;
 
 	wstringstream linkPathBuilder;
-	linkPathBuilder << startMenuPath << L"\\" << ConvertAnsiToWide(appName) << ".lnk";
+	linkPathBuilder << startMenuPath << L"\\" << appName << ".lnk";
 
 	wstring linkPath = linkPathBuilder.str();
 
@@ -516,12 +521,12 @@ bool LinkStartMenu(string appName, wstring startupFilePath)
 	return true;
 }
 
-bool CheckInstalled(string appName, bool& installed, UninstallerData_t* uninstallerData)
+bool CheckInstalled(wstring appName, bool& installed, UninstallerData_t* uninstallerData)
 {
 	try
 	{
 		wstringstream keyBuilder;
-		keyBuilder << L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" << ConvertAnsiToWide(appName);
+		keyBuilder << L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" << appName;
 
 		RegKey key;
 		RegResult result = key.TryOpen(HKEY_CURRENT_USER, keyBuilder.str());
@@ -534,13 +539,13 @@ bool CheckInstalled(string appName, bool& installed, UninstallerData_t* uninstal
 
 		installed = true;
 		uninstallerData->UninstallerBaseKey = L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\";
-		uninstallerData->AppName = ConvertAnsiToWide(appName);
+		uninstallerData->AppName = appName;
 		uninstallerData->UninstallerPath = key.GetStringValue(L"UninstallString");
 		uninstallerData->BaseFolderPath = key.GetStringValue(L"InstallLocation");
 	}
 	catch (const exception& ex)
 	{
-		cerr << "Error accessing registry." << endl;
+		wcerr << L"Error accessing registry." << endl;
 		wcerr << ex.what() << endl;
 		return false;
 	}
@@ -548,21 +553,21 @@ bool CheckInstalled(string appName, bool& installed, UninstallerData_t* uninstal
 	return true;
 }
 
-bool RegisterApp(string appName, string version, string company, DWORD unpackedSize, wstring installLocation, wstring exeLocation)
+bool RegisterApp(wstring appName, string version, string company, DWORD unpackedSize, wstring installLocation, wstring exeLocation)
 {
 	wstringstream keyBuilder;
-	keyBuilder << L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" << ConvertAnsiToWide(appName);
+	keyBuilder << L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" << appName;
 
 	RegKey key;
 	RegResult result = key.TryCreate(HKEY_CURRENT_USER, keyBuilder.str());
 	if (!result)
 	{
-		cerr << "Error accessing registry." << endl;
+		wcerr << L"Error accessing registry." << endl;
 		wcerr << result.ErrorMessage() << endl;
 		return false;
 	}
 
-	key.SetStringValue(L"DisplayName", ConvertAnsiToWide(appName));
+	key.SetStringValue(L"DisplayName", appName);
 	key.SetStringValue(L"DisplayVersion", ConvertAnsiToWide(version));
 	key.SetStringValue(L"DisplayIcon", exeLocation);
 	if (!company.empty())
@@ -646,9 +651,9 @@ bool UninstallApp(wstring selfFilePath, UninstallerData_t* uninstallerData)
 	return true;
 }
 
-void PrintError(string message)
+void PrintError(wstring message)
 {
 	ShowWindow(GetConsoleWindow(), SW_SHOW);
-	cerr << message << endl;
+	wcerr << message << endl;
 	system("pause");
 }
