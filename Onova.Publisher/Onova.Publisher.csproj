@@ -36,11 +36,19 @@
 		<PackageReference Include="System.CommandLine.Rendering" Version="0.3.0-alpha.21216.1" />
 	</ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent;Publish">
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 		<ItemGroup>
 			<SignToolFiles Include="$(NuGetPackageRoot)signtool\10.0.17763.132\tools\*.*" />
 		</ItemGroup>
 		<Copy SourceFiles="$(SolutionDir)bin\Onova.Installer\$(ConfigurationName)\Win32\Onova.Installer.exe" DestinationFolder="$(TargetDir)" />
 		<Copy SourceFiles="@(SignToolFiles)" DestinationFolder="$(TargetDir)" />
+	</Target>
+
+	<Target Name="PostPublish" AfterTargets="Publish">
+		<ItemGroup>
+			<SignToolFiles Include="$(NuGetPackageRoot)signtool\10.0.17763.132\tools\*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="$(SolutionDir)bin\Onova.Installer\$(ConfigurationName)\Win32\Onova.Installer.exe" DestinationFolder="$(PublishDir)" />
+		<Copy SourceFiles="@(SignToolFiles)" DestinationFolder="$(PublishDir)" />
 	</Target>
 </Project>

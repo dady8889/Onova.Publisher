@@ -4189,7 +4189,8 @@ ZRESULT TUnzip::Unzip(int index,void *dst,unsigned int len,DWORD flags)
     if (res>0) {DWORD writ; BOOL bres=WriteFile(h,unzbuf,res,&writ,NULL); if (!bres) {haderr=ZR_WRITE; break;}}
 #endif
     if (reached_eof) break;
-    if (res==0) {haderr=ZR_FLATE; break;}
+    // if (res==0) {haderr=ZR_FLATE; break;}
+    if (res == 0) break; // allow empty files
   }
   unzCloseCurrentFile(uf);
 #ifdef ZIP_STD

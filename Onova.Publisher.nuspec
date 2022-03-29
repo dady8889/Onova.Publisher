@@ -16,6 +16,7 @@
       <group targetFramework="net6.0" />
     </dependencies>
     <releaseNotes>* FIX: Fixed order of versions placed in manifest during rebuild.
+* FIX: Fixed installing zips with empty files.
 * NEW: Added Unicode support for the application name.
 * NEW: Code signing support using -s or --sign. Read more in Onova.Publisher -h.
 * CHANGE: Output argument -o or --output will now output generated files to the specified directory. (previously it would always create OnovaPublish folder)
@@ -23,6 +24,6 @@
 	</releaseNotes>
   </metadata>
   <files>
-    <file src="Onova.Publisher\publish\**" target="tools/"/>
+    <file src=".\publish\**" target="tools/"/>
   </files>
 </package>

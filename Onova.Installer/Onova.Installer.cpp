@@ -13,10 +13,10 @@ int main(int argc, char* argv[])
 		cout << "WARNING: Your terminal does not support Unicode characters." << endl;
 	}
 
-#ifdef NDEBUG
-	// hide the console window
-	ShowWindow(GetConsoleWindow(), SW_HIDE);
-#endif
+//#ifdef NDEBUG
+//	// hide the console window
+//	ShowWindow(GetConsoleWindow(), SW_HIDE);
+//#endif
 
 #ifndef NDEBUG
 	wcout << "Attach debugger" << endl;
@@ -70,10 +70,10 @@ int main(int argc, char* argv[])
 	}
 
 	// show the window
-	ShowWindow(GetConsoleWindow(), SW_SHOW);
+	// ShowWindow(GetConsoleWindow(), SW_SHOW);
 
 	wcout << L"Welcome to " << data.AppName << L" web install" << endl;
-	wcout << L"Downloading the latest version..." << endl;
+	wcout << L"Checking manifest..." << endl;
 
 	// read the manifest
 	ManifestMap manifestMap;
@@ -100,7 +100,7 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	wcout << L"Installing version " << ConvertAnsiToWide(newestEntry->first) << L"..." << endl;
+	wcout << L"Downloading version " << ConvertAnsiToWide(newestEntry->first) << L"..." << endl;
 
 	wstring tempZipPath;
 
@@ -113,6 +113,8 @@ int main(int argc, char* argv[])
 #ifndef NDEBUG
 	wcout << L"Written zip to: " << tempZipPath << endl;
 #endif
+
+	wcout << L"Unpacking..." << endl;
 
 	// unpack the zip
 	DWORD unpackedSize;
@@ -226,10 +228,12 @@ bool LoadPublisherData(wstring selfFilePath, PublisherData_t* publisherData)
 	// parse the structure
 	char* pointer = buffer;
 
-	publisherData->AppName = std::wstring(reinterpret_cast<wchar_t*>(pointer), PUBLISHER_DATA_APPNAME_LEN / sizeof(wchar_t));
+	size_t appNameSize = wcsnlen_s(reinterpret_cast<wchar_t*>(pointer), PUBLISHER_DATA_APPNAME_LEN / sizeof(wchar_t));
+	publisherData->AppName = std::wstring(reinterpret_cast<wchar_t*>(pointer), appNameSize);
 	pointer += PUBLISHER_DATA_APPNAME_LEN;
 
-	publisherData->ManifestUrl = std::string(pointer, PUBLISHER_DATA_MANIFESTURL_LEN);
+	size_t urlSize = strnlen_s(pointer, PUBLISHER_DATA_MANIFESTURL_LEN);
+	publisherData->ManifestUrl = std::string(pointer, urlSize);
 	pointer += PUBLISHER_DATA_MANIFESTURL_LEN;
 
 	return true;
@@ -653,7 +657,7 @@ bool UninstallApp(wstring selfFilePath, UninstallerData_t* uninstallerData)
 
 void PrintError(wstring message)
 {
-	ShowWindow(GetConsoleWindow(), SW_SHOW);
+	// ShowWindow(GetConsoleWindow(), SW_SHOW);
 	wcerr << message << endl;
 	system("pause");
 }
