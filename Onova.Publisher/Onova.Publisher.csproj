@@ -1,39 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
-    <Authors>dady8889</Authors>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <FileVersion>1.1.0.0</FileVersion>
-    <PackageReleaseNotes>* Rewrite command line app
-* Implement generation of release note files for Onova.ReleaseNotes, can disable with --no-rn
-* More command aliases and better help
-</PackageReleaseNotes>
-    <Version>1.1.0</Version>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net5.0</TargetFramework>
+		<Authors>dady8889</Authors>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<PackageReleaseNotes>
+			* Fixed order of versions placed in manifest during rebuild
+			* Added Unicode support for application name
+		</PackageReleaseNotes>
+		<Version>1.2.0</Version>
+		<RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="publish\**" />
-    <EmbeddedResource Remove="publish\**" />
-    <None Remove="publish\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="publish\**" />
+		<EmbeddedResource Remove="publish\**" />
+		<None Remove="publish\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="NuGet.CommandLine" Version="5.9.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
-    <PackageReference Include="System.CommandLine.Rendering" Version="0.3.0-alpha.21216.1" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="..\Onova.Publisher.nuspec" />
+	</ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /y &quot;$(SolutionDir)Onova.Installer\bin\$(ConfigurationName)\Win32\Onova.Installer.exe&quot; &quot;$(TargetDir)&quot;" />
-  </Target>
-  <Target Name="PostPublish" AfterTargets="Publish">
-    <Copy SourceFiles="..\Onova.Installer\bin\Release\Win32\Onova.Installer.exe" DestinationFolder="$(PublishDir)" />
-  </Target>
+	<ItemGroup>
+		<PackageReference Include="NuGet.CommandLine" Version="5.9.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
+		<PackageReference Include="System.CommandLine.Rendering" Version="0.3.0-alpha.21216.1" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="xcopy /y &quot;$(SolutionDir)Onova.Installer\bin\$(ConfigurationName)\Win32\Onova.Installer.exe&quot; &quot;$(TargetDir)&quot;" />
+	</Target>
+	<Target Name="PostPublish" AfterTargets="Publish">
+		<Copy SourceFiles="..\Onova.Installer\bin\Release\Win32\Onova.Installer.exe" DestinationFolder="$(PublishDir)" />
+	</Target>
 </Project>
