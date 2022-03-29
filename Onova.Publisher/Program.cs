@@ -37,23 +37,28 @@ namespace Onova.Publisher
 
                 new Option<string>(
                     new [] {"--output", "--out", "-o" },
-                    () => ".",
-                    "Output folder which will contain the publish folder. Publish folder will contain the updated manifest file, zip and installer.")
+                    () => ".\\" + PublisherConstant.OutputFolder,
+                    "Folder which will contain the updated manifest file, zip and installer.")
                 { IsRequired = false },
 
                 new Option<bool>(
                     new [] {"--no-releasenotes", "--no-rn"},
                     "Disables generation of an empty release note (.rn) file.")
+                { IsRequired = false },
+
+                new Option<string>(
+                    new [] {"--sign", "-s"},
+                    "Sign AppName.exe/.dll files and the installer. This field accepts SignTool parameters.")
                 { IsRequired = false }
             };
 
             rootCommand.Description = "Publishes your application for Onova.";
-            rootCommand.Handler = CommandHandler.Create<string, string, string, string, string, bool>(CommandLineHandler);
+            rootCommand.Handler = CommandHandler.Create<string, string, string, string, string, bool, string>(CommandLineHandler);
 
             return rootCommand.InvokeAsync(args).Result;
         }
 
-        static int CommandLineHandler(string name, string version, string url, string target, string output, bool noReleaseNotes)
+        static int CommandLineHandler(string name, string version, string url, string target, string output, bool noReleaseNotes, string sign)
         {
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(version) ||
                 string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(target) ||
@@ -77,7 +82,7 @@ namespace Onova.Publisher
 
             if (url.Length >= InstallerConstant.ManifestUrlLength)
             {
-                
+
                 Console.Error.WriteLine("Manifest URL is too long.");
                 return 1;
             }
@@ -88,17 +93,13 @@ namespace Onova.Publisher
                 return 1;
             }
 
-            if (!Directory.Exists(output))
-            {
-                Console.Error.WriteLine("Output folder not found.");
-                return 1;
-            }
-
             if (!File.Exists(Path.Combine(target, name + ".exe")))
             {
                 Console.Error.WriteLine("Target folder does not contain the executable. Check that the target name is the actual name of the executable.");
                 return 1;
             }
+
+            Console.WriteLine($"Publishing application {name}...");
 
             var publisher = new Publisher(name, version, url, target, output);
 
@@ -110,10 +111,16 @@ namespace Onova.Publisher
                 if (publisher.CheckVersionPublished())
                     return 1;
 
+                if (!string.IsNullOrEmpty(sign))
+                    publisher.SignExecutables(sign);
+
                 publisher.CreateZip();
                 publisher.RebuildManifest();
                 publisher.CreateInstaller();
                 publisher.CreateEmptyReleaseNote();
+
+                if (!string.IsNullOrEmpty(sign))
+                    publisher.SignInstaller(sign);
             }
             catch (Exception ex)
             {

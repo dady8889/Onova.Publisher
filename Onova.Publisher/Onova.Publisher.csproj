@@ -12,6 +12,8 @@
 		<Version>1.2.0</Version>
 		<RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+		<OutputPath>$(SolutionDir)bin\$(MSBuildProjectName)\$(Configuration)\$(Platform)\</OutputPath>
+		<IntermediateOutputPath>$(SolutionDir)obj\$(MSBuildProjectName)\$(Configuration)\$(Platform)\</IntermediateOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -29,14 +31,16 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="signtool" Version="10.0.17763.132" />
 		<PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
 		<PackageReference Include="System.CommandLine.Rendering" Version="0.3.0-alpha.21216.1" />
 	</ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Exec Command="xcopy /y &quot;$(SolutionDir)Onova.Installer\bin\$(ConfigurationName)\Win32\Onova.Installer.exe&quot; &quot;$(TargetDir)&quot;" />
-	</Target>
-	<Target Name="PostPublish" AfterTargets="Publish">
-		<Copy SourceFiles="..\Onova.Installer\bin\Release\Win32\Onova.Installer.exe" DestinationFolder="$(PublishDir)" />
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent;Publish">
+		<ItemGroup>
+			<SignToolFiles Include="$(NuGetPackageRoot)signtool\10.0.17763.132\tools\*.*" />
+		</ItemGroup>
+		<Copy SourceFiles="$(SolutionDir)bin\Onova.Installer\$(ConfigurationName)\Win32\Onova.Installer.exe" DestinationFolder="$(TargetDir)" />
+		<Copy SourceFiles="@(SignToolFiles)" DestinationFolder="$(TargetDir)" />
 	</Target>
 </Project>

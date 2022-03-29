@@ -19,8 +19,8 @@ The most important part is the installer - in comparison to Squirrel, which pack
 
 **Like Squirrel, Onova.Publisher builds an installer which will install your application to the local appdata folder, without needing admin privileges.**  
 
-## Documentation
-The only **requirement** for Onova.Publisher to work is that your project **targets .NET 5** *(actually, it may work for other .NET Core versions but I have not tested it)*.
+## Usage
+The only **requirement** for Onova.Publisher to work is that your project **targets .NET 5+**.
 
 Let us assume you have built and dotnet published your app into the *\publish* folder of your solution.
 Select your startup project as the default project in the Package Manager Console.
@@ -34,12 +34,13 @@ Usage:
   Onova.Publisher [options]
 
 Options:
-  -n, --name <name>             Your application's name (name of executable without extension). Maximum 64 characters.
+  -n, --name <name>             Your application's name (name of executable without extension). Maximum 31 characters.
   -v, --version <version>       Version in format major.minor[.build[.revision]].
-  -u, --url <url>               URL to web where the manifest resides. Maximum 1024 characters.
+  -u, --url <url>               URL to web where the manifest resides. Maximum 1023 characters.
   -i, --in, --target <target>   Folder which will get packed into a zip.
-  -o, --out, --output <output>  Output folder which will contain the publish folder. Publish folder will contain the updated manifest file, zip and installer. [default: .]
+  -o, --out, --output <output>  Folder which will contain the updated manifest file, zip and installer. [default: .\OnovaPublish]
   --no-releasenotes, --no-rn    Disables generation of an empty release note (.rn) file.
+  -s, --sign <sign>             Sign AppName.exe/.dll files and the installer. This field accepts SignTool parameters.
   -?, -h, --help                Show help and usage information
 ```
 
@@ -107,9 +108,18 @@ Currently, the installed app **will not** be started after the installation.
 
 If you want to uninstall the application, you can use the standard Windows uninstall procedure using Settings, or you can directly execute the uninstall.exe in the application base directory. *Also, in comparison with Squirrel, your application will have an icon visible in the installed programs menu, and the uninstaller leaves no installed files behind.*
 
+## Code signing
+
+If you don't want to sign your app by yourself, you can use Onova.Publisher with the --sign option.
+This option requires parameters that get passed to the bundled SignTool.
+Onova.Publisher will sign **only** valid executable files (exe, dll) with your application's name, and the generated installer. Example:
+```
+PM> Onova.Publisher --name DummyApp --version 1.3.0 --url https://dummy.com/files/ --target publish\ --sign "/f cert.pfx /p passwd123 /tr http://timestamp.digicert.com"
+```
+
 ## Missing (planned) features
 - [x] Changelog support
-- [ ] Code signing and timestamping
+- [x] SignTool support
 - [ ] Start menu link in publisher name folder
 - [ ] Run app after installation
 - [ ] Silent install

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -15,15 +16,15 @@ namespace Onova.Publisher
         public string AppVersion { get; }
         public string ManifestUrl { get; }
         public string TargetFolder { get; }
-        public string OutputFolder { get; }
 
         public string ReleaseFolder { get; }
         public string ReleaseFileName { get; }
         public string ReleaseFilePath { get; }
 
         public string PublisherDirectory { get; }
-        public string InstallerPath { get; }
-        
+        public string InstallerTemplatePath { get; }
+        public string InstallerFilePath { get; private set; }
+
         public bool GenerateReleaseNotes { get; private set; }
 
         public Publisher(string appName, string appVersion, string manifestUrl, string targetFolder, string outputFolder)
@@ -39,14 +40,13 @@ namespace Onova.Publisher
             AppVersion = appVersion;
             ManifestUrl = manifestUrl;
             TargetFolder = targetFolder;
-            OutputFolder = outputFolder;
 
-            ReleaseFolder = Path.Combine(OutputFolder, PublisherConstant.OutputFolder);
+            ReleaseFolder = outputFolder;
             ReleaseFileName = ReleasifyName(AppName, AppVersion);
             ReleaseFilePath = Path.Combine(ReleaseFolder, ReleaseFileName);
 
             PublisherDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            InstallerPath = Path.Combine(PublisherDirectory, InstallerConstant.InstallerName);
+            InstallerTemplatePath = Path.Combine(PublisherDirectory, InstallerConstant.InstallerName);
 
             GenerateReleaseNotes = true;
         }
@@ -71,6 +71,7 @@ namespace Onova.Publisher
 
         public void CreateZip()
         {
+            Console.WriteLine("Creating zip...");
             try
             {
                 ZipFile.CreateFromDirectory(TargetFolder, ReleaseFilePath);
@@ -137,16 +138,18 @@ namespace Onova.Publisher
 
         public void CreateInstaller()
         {
-            if (!File.Exists(InstallerPath))
+            Console.WriteLine("Building installer...");
+
+            if (!File.Exists(InstallerTemplatePath))
             {
                 throw new Exception("Publisher cannot find the template installer.");
             }
 
-            var installerPath = Path.Combine(ReleaseFolder, PublisherConstant.InstallerName);
+            InstallerFilePath = Path.Combine(ReleaseFolder, PublisherConstant.InstallerName);
 
             try
             {
-                File.Copy(InstallerPath, installerPath, true);
+                File.Copy(InstallerTemplatePath, InstallerFilePath, true);
             }
             catch (Exception ex)
             {
@@ -159,7 +162,7 @@ namespace Onova.Publisher
             Encoding.Unicode.GetBytes(AppName).CopyTo(packedAppName, 0);
             Encoding.ASCII.GetBytes(ManifestUrl).CopyTo(packedManifestUrl, 0);
 
-            using (var fileStream = new FileStream(installerPath, FileMode.Append, FileAccess.Write, FileShare.None))
+            using (var fileStream = new FileStream(InstallerFilePath, FileMode.Append, FileAccess.Write, FileShare.None))
             using (var bw = new BinaryWriter(fileStream))
             {
                 bw.Write(packedAppName);
@@ -191,6 +194,22 @@ namespace Onova.Publisher
             {
                 throw new Exception("Cannot create release note file.", ex);
             }
+        }
+
+        public void SignExecutables(string parameters)
+        {
+            var files = Directory.GetFiles(TargetFolder, $"{AppName}.*").Where(x => x.EndsWith(".exe") || x.EndsWith(".dll")).ToList();
+            foreach (var file in files)
+            {
+                var p = Process.Start("signtool.exe", $"sign /q {parameters} {file}");
+                p.WaitForExit();
+            }
+        }
+
+        public void SignInstaller(string parameters)
+        {
+            var p = Process.Start("signtool.exe", $"sign /q {parameters} {InstallerFilePath}");
+            p.WaitForExit();
         }
     }
 }
