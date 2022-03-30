@@ -3,15 +3,15 @@ using System.IO;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Text;
+using System.Runtime.InteropServices;
 
 namespace Onova.Publisher
 {
     class Program
     {
-
         static int Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.Unicode;
+            Console.OutputEncoding = Encoding.Default;
 
             var rootCommand = new RootCommand
             {
@@ -82,7 +82,6 @@ namespace Onova.Publisher
 
             if (url.Length >= InstallerConstant.ManifestUrlLength)
             {
-
                 Console.Error.WriteLine("Manifest URL is too long.");
                 return 1;
             }

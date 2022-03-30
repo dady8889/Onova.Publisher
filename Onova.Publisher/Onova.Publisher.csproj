@@ -5,11 +5,7 @@
 		<TargetFramework>net5.0</TargetFramework>
 		<Authors>dady8889</Authors>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-		<PackageReleaseNotes>
-			* Fixed order of versions placed in manifest during rebuild
-			* Added Unicode support for application name
-		</PackageReleaseNotes>
-		<Version>1.2.0</Version>
+		<Version>1.2.1</Version>
 		<RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
 		<GenerateAssemblyInfo>true</GenerateAssemblyInfo>
 		<OutputPath>$(SolutionDir)bin\$(MSBuildProjectName)\$(Configuration)\$(Platform)\</OutputPath>

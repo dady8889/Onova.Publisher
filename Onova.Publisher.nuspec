@@ -3,7 +3,7 @@
   <metadata>
     <id>Onova.Publisher</id>
     <title>Onova.Publisher</title>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <authors>dady8889</authors>
     <owners>dady8889</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -15,12 +15,7 @@
       <group targetFramework="net5.0" />
       <group targetFramework="net6.0" />
     </dependencies>
-    <releaseNotes>* FIX: Fixed order of versions placed in manifest during rebuild.
-* FIX: Fixed installing zips with empty files.
-* NEW: Added Unicode support for the application name.
-* NEW: Code signing support using -s or --sign. Read more in Onova.Publisher -h.
-* CHANGE: Output argument -o or --output will now output generated files to the specified directory. (previously it would always create OnovaPublish folder)
-* CHANGE: Maximum length of application name is now 31 characters, url is 1023 characters.
+    <releaseNotes>* FIX: Fixed encoding issue in VS Package Manager Console.
 	</releaseNotes>
   </metadata>
   <files>
