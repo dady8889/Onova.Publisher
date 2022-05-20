@@ -7,8 +7,8 @@
 #include <filesystem>
 #include <iostream>
 #include <sstream>
-#include <codecvt>
 #include <locale>
+#include <map>
 
 #include <fcntl.h>
 #include <io.h>
@@ -19,11 +19,11 @@
 #pragma comment(lib, "wldap32.lib")
 #pragma comment(lib, "crypt32.lib")
 
-#include <cpr/cpr.h>
-
 #include "StringUtils.h"
 #include "WinReg.hpp"
 #include "zip_file.hpp"
+
+#include <cpr/cpr.h>
 
 constexpr size_t PUBLISHER_DATA_APPNAME_LEN = (32 * sizeof(wchar_t));
 constexpr size_t PUBLISHER_DATA_MANIFESTURL_LEN = (1024 * sizeof(char));
@@ -32,8 +32,8 @@ constexpr size_t PUBLISHER_DATA_LEN = (PUBLISHER_DATA_APPNAME_LEN + PUBLISHER_DA
 using namespace std;
 
 typedef struct {
-    std::wstring AppName;
-    std::string ManifestUrl;
+    wstring AppName;
+    string ManifestUrl;
 } PublisherData_t;
 
 typedef struct {
