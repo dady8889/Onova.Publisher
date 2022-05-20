@@ -18,9 +18,6 @@
     <ClCompile Include="Onova.Installer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="unzip.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Onova.Installer.h">
@@ -29,10 +26,10 @@
     <ClInclude Include="StringUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="unzip.h">
+    <ClInclude Include="WinReg.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="WinReg.hpp">
+    <ClInclude Include="zip_file.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

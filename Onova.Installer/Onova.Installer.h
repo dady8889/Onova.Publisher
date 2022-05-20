@@ -1,6 +1,7 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 
 #include <fstream>
 #include <filesystem>
@@ -22,7 +23,7 @@
 
 #include "StringUtils.h"
 #include "WinReg.hpp"
-#include "unzip.h"
+#include "zip_file.hpp"
 
 constexpr size_t PUBLISHER_DATA_APPNAME_LEN = (32 * sizeof(wchar_t));
 constexpr size_t PUBLISHER_DATA_MANIFESTURL_LEN = (1024 * sizeof(char));

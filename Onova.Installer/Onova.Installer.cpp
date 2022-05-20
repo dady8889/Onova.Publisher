@@ -441,44 +441,22 @@ bool GetLocalAppDataFolder(wstring& folderPath)
 
 bool Unzip(wstring targetZip, wstring targetPath, DWORD& unpackedSize)
 {
-	HZIP zipHandle = OpenZip(targetZip.c_str(), NULL);
-
-	if (zipHandle == NULL)
-		return false;
-
-	ZRESULT returnCode = SetUnzipBaseDir(zipHandle, targetPath.c_str());
-
-	if (returnCode != ZR_OK)
-		return false;
-
-	ZIPENTRY zipEntry;
-	returnCode = GetZipItem(zipHandle, -1, &zipEntry);
-
-	if (returnCode != ZR_OK)
-		return false;
-
-	int zipItemCount = zipEntry.index;
-	unpackedSize = 0;
-
-	for (int i = 0; i < zipItemCount; i++)
+	try
 	{
-		ZIPENTRY zipItem;
-		returnCode = GetZipItem(zipHandle, i, &zipItem);
+		std::ifstream stream(targetZip, std::ios::binary);
+		miniz_cpp::zip_file zip(stream);
 
-		if (returnCode != ZR_OK)
-			return false;
+		zip.printdir(std::wcout);
 
-		returnCode = UnzipItem(zipHandle, i, zipItem.name);
-
-		if (returnCode != ZR_OK)
-			return false;
-
-		unpackedSize += zipItem.unc_size;
+		size_t size = zip.extractall(targetPath);
+		unpackedSize = size / 1024;
 	}
-
-	unpackedSize /= 1024; // size in kilobytes
-
-	CloseZip(zipHandle);
+	catch (const exception& ex)
+	{
+		wcerr << L"Error unzipping file " << targetZip << endl;
+		wcerr << ex.what() << endl;
+		return false;
+	}
 
 	return true;
 }
@@ -582,8 +560,11 @@ bool RegisterApp(wstring appName, string version, string company, DWORD unpacked
 	key.SetStringValue(L"InstallLocation", installLocation);
 
 	time_t now = chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	struct tm newtime;
+	localtime_s(&newtime, &now);
+
 	char buf[100] = { 0 };
-	std::strftime(buf, sizeof(buf), "%Y%m%d", localtime(&now));
+	std::strftime(buf, sizeof(buf), "%Y%m%d", &newtime);
 	wstring installDate = wstring(ConvertAnsiToWide(buf));
 	key.SetStringValue(L"InstallDate", installDate);
 
