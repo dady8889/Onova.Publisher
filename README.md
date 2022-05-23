@@ -138,13 +138,13 @@ PM> Onova.Publisher --name DummyApp --version 1.3.0 --url https://dummy.com/file
 
 ## Building
 
+First, you need to setup the `vcpkg` Package Manager, more info [here](https://vcpkg.io/en/getting-started.html).
+
 ```sh
-git clone --recurse-submodules https://github.com/dady8889/Onova.Publisher.git
-cd Onova.Publisher
 cd vcpkg
-./bootstrap-vcpkg.bat
-./vcpkg integrate project --triplet x86-windows-static # follow instructions
 ./vcpkg install cpr:x86-windows-static
+
+git clone https://github.com/dady8889/Onova.Publisher.git
 
 # Build Solution in VS2022
 ```
@@ -156,8 +156,8 @@ Any contribution is welcome.
 ## Licensing
 The project uses following licensed works:
 
-* unzip.h unzip.cpp - Lucian Wischik, Jean-Loup Gailly, Mark Adler, zlib
-* WinReg.hpp - Giovanni Dicanio
+* zip_file.hpp - [miniz_cpp](https://github.com/tfussell/miniz-cpp)
+* WinReg.hpp - Giovanni Dicanio, [WinReg](https://github.com/GiovanniDicanio/WinReg)
 * [cpr](https://github.com/libcpr/cpr)
 
 My provided code is licensed under the MIT license.
