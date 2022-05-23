@@ -3,7 +3,7 @@
   <metadata>
     <id>Onova.Publisher</id>
     <title>Onova.Publisher</title>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <authors>dady8889</authors>
     <owners>dady8889</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -15,7 +15,7 @@
       <group targetFramework="net5.0" />
       <group targetFramework="net6.0" />
     </dependencies>
-    <releaseNotes>* FIX: Fixed encoding issue in VS Package Manager Console.
+    <releaseNotes>* REFACTORING: Replaced zip handler library. This change should fix potential issues with UTF path names in zip, unpacking of empty files/folders.
 	</releaseNotes>
   </metadata>
   <files>
