@@ -446,7 +446,9 @@ bool Unzip(wstring targetZip, wstring targetPath, DWORD& unpackedSize)
 		std::ifstream stream(targetZip, std::ios::binary);
 		miniz_cpp::zip_file zip(stream);
 
+#ifndef NDEBUG
 		zip.printdir(std::wcout);
+#endif
 
 		size_t size = zip.extractall(targetPath);
 		unpackedSize = size / 1024;
