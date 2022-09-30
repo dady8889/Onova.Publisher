@@ -3,7 +3,7 @@
   <metadata>
     <id>Onova.Publisher</id>
     <title>Onova.Publisher</title>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
     <authors>dady8889</authors>
     <owners>dady8889</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -14,8 +14,9 @@
     <dependencies>
       <group targetFramework="net5.0" />
       <group targetFramework="net6.0" />
+	  <group targetFramework="net7.0" />
     </dependencies>
-    <releaseNotes>* FIX: Removed printing of zip file structure during install.
+    <releaseNotes>* FIX: Fixed issue with multiple nested folders not unpacking.
 	</releaseNotes>
   </metadata>
   <files>
