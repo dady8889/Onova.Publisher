@@ -5376,7 +5376,7 @@ public:
             if (dir.exists())
                 return;
 
-            if (!std::filesystem::create_directory(dir))
+            if (!std::filesystem::create_directories(dir))
                 throw std::exception("could not create directory");
 
             return;
@@ -5388,7 +5388,7 @@ public:
 
         if (!dir.exists())
         {
-            if (!std::filesystem::create_directory(dir))
+            if (!std::filesystem::create_directories(dir))
                 throw std::exception("could not create directory");
         }
 
