@@ -136,19 +136,6 @@ PM> Onova.Publisher --name DummyApp --version 1.3.0 --url https://dummy.com/file
 - [x] App name allows only ANSI encoding
 - [x] MANIFEST rebuilding sorts alphabetically, not semantically
 
-## Building
-
-First, you need to setup the `vcpkg` Package Manager, more info [here](https://vcpkg.io/en/getting-started.html).
-
-```sh
-cd vcpkg
-./vcpkg install cpr:x86-windows-static
-
-git clone https://github.com/dady8889/Onova.Publisher.git
-
-# Build Solution in VS2022
-```
-
 ## Contributions
 I am open to suggestions, PRs, bug reports.
 Any contribution is welcome.
