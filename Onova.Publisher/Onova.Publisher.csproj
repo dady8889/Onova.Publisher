@@ -12,6 +12,12 @@
 		<IntermediateOutputPath>$(SolutionDir)obj\$(MSBuildProjectName)\$(Configuration)\$(Platform)\</IntermediateOutputPath>
 	</PropertyGroup>
 
+	<PropertyGroup>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>Onova.Publisher</ToolCommandName>
+    <PackageOutputPath>./publish</PackageOutputPath>
+  </PropertyGroup>
+
 	<ItemGroup>
 		<Compile Remove="publish\**" />
 		<EmbeddedResource Remove="publish\**" />
