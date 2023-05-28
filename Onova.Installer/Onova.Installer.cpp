@@ -163,7 +163,7 @@ int main(int argc, char* argv[])
 	wcout << L"Copied uninstaller." << endl;
 #endif
 
-	wcout << L"The app was sucessfully installed." << endl;
+	wcout << L"The app was successfully installed." << endl;
 	system("pause");
 
 	return 0;
