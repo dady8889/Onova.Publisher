@@ -14,9 +14,11 @@
     <dependencies>
       <group targetFramework="net5.0" />
       <group targetFramework="net6.0" />
-	    <group targetFramework="net7.0" />
+	  <group targetFramework="net7.0" />
     </dependencies>
-    <releaseNotes>* FIX: Fixed issue with multiple nested folders not unpacking.
+    <releaseNotes>* NEW: Added support for "dotnet tool" @nefarius
+		* FIX: Fixed typo in installer @nefarius
+		* CHANGE: Updated NuGet.Commandline (used only in IDE)
 	</releaseNotes>
   </metadata>
   <files>

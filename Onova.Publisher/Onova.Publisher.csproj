@@ -23,38 +23,38 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="publish\**"/>
-        <EmbeddedResource Remove="publish\**"/>
-        <None Remove="publish\**"/>
+        <Compile Remove="publish\**" />
+        <EmbeddedResource Remove="publish\**" />
+        <None Remove="publish\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\Onova.Publisher.nuspec"/>
+        <None Include="..\Onova.Publisher.nuspec" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="NuGet.CommandLine" Version="6.3.0">
+        <PackageReference Include="NuGet.CommandLine" Version="6.5.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="signtool" Version="10.0.17763.132"/>
-        <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1"/>
-        <PackageReference Include="System.CommandLine.Rendering" Version="0.3.0-alpha.21216.1"/>
+        <PackageReference Include="signtool" Version="10.0.17763.132" />
+        <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
+        <PackageReference Include="System.CommandLine.Rendering" Version="0.3.0-alpha.21216.1" />
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <ItemGroup>
-            <SignToolFiles Include="$(NuGetPackageRoot)signtool\10.0.17763.132\tools\*.*"/>
+            <SignToolFiles Include="$(NuGetPackageRoot)signtool\10.0.17763.132\tools\*.*" />
         </ItemGroup>
-        <Copy SourceFiles="$(SolutionDir)bin\Onova.Installer\$(ConfigurationName)\Win32\Onova.Installer.exe" DestinationFolder="$(TargetDir)"/>
-        <Copy SourceFiles="@(SignToolFiles)" DestinationFolder="$(TargetDir)"/>
+        <Copy SourceFiles="$(SolutionDir)bin\Onova.Installer\$(ConfigurationName)\Win32\Onova.Installer.exe" DestinationFolder="$(TargetDir)" />
+        <Copy SourceFiles="@(SignToolFiles)" DestinationFolder="$(TargetDir)" />
     </Target>
 
     <Target Name="PostPublish" AfterTargets="Publish">
         <ItemGroup>
-            <SignToolFiles Include="$(NuGetPackageRoot)signtool\10.0.17763.132\tools\*.*"/>
+            <SignToolFiles Include="$(NuGetPackageRoot)signtool\10.0.17763.132\tools\*.*" />
         </ItemGroup>
-        <Copy SourceFiles="$(SolutionDir)bin\Onova.Installer\$(ConfigurationName)\Win32\Onova.Installer.exe" DestinationFolder="$(PublishDir)"/>
-        <Copy SourceFiles="@(SignToolFiles)" DestinationFolder="$(PublishDir)"/>
+        <Copy SourceFiles="$(SolutionDir)bin\Onova.Installer\$(ConfigurationName)\Win32\Onova.Installer.exe" DestinationFolder="$(PublishDir)" />
+        <Copy SourceFiles="@(SignToolFiles)" DestinationFolder="$(PublishDir)" />
     </Target>
 </Project>
