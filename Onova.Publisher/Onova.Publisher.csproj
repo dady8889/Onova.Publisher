@@ -5,7 +5,7 @@
         <TargetFramework>net5.0</TargetFramework>
         <Authors>dady8889</Authors>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-        <Version>1.2.5</Version>
+        <Version>1.2.6</Version>
         <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
         <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
         <OutputPath>$(SolutionDir)bin\$(MSBuildProjectName)\$(Configuration)\$(Platform)\</OutputPath>
@@ -57,4 +57,9 @@
         <Copy SourceFiles="$(SolutionDir)bin\Onova.Installer\$(ConfigurationName)\Win32\Onova.Installer.exe" DestinationFolder="$(PublishDir)" />
         <Copy SourceFiles="@(SignToolFiles)" DestinationFolder="$(PublishDir)" />
     </Target>
+
+    <!-- marks all published files to be included in the resulting .nupkg -->
+    <ItemGroup>
+        <None Include="$(PublishDir)\*.*" PackagePath="tools\$(TargetFramework)\any" Pack="true" />
+    </ItemGroup>
 </Project>
