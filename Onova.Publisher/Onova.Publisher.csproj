@@ -12,6 +12,7 @@
         <IntermediateOutputPath>$(SolutionDir)obj\$(MSBuildProjectName)\$(Configuration)\$(Platform)\</IntermediateOutputPath>
     </PropertyGroup>
 
+    <!-- "dotnet tool"-specific directives -->
     <PropertyGroup>
         <PackAsTool>true</PackAsTool>
         <ToolCommandName>Onova.Publisher</ToolCommandName>
