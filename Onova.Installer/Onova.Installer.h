@@ -9,6 +9,7 @@
 #include <sstream>
 #include <locale>
 #include <map>
+#include <vector>
 
 #include <fcntl.h>
 #include <io.h>
@@ -43,7 +44,7 @@ typedef struct {
     wstring AppName;
 } UninstallerData_t;
 
-typedef map<string, string> ManifestMap;
+typedef vector<pair<string, string>> ManifestMap;
 
 bool LoadPublisherData(wstring selfFilePath, PublisherData_t* publisherData);
 bool ParseManifest(string manifestUrl, ManifestMap& manifestMap);

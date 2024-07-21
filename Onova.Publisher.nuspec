@@ -3,7 +3,7 @@
   <metadata>
     <id>Onova.Publisher</id>
     <title>Onova.Publisher</title>
-    <version>1.2.5</version>
+    <version>1.2.6</version>
     <authors>dady8889</authors>
     <owners>dady8889</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -16,9 +16,7 @@
       <group targetFramework="net6.0" />
 	  <group targetFramework="net7.0" />
     </dependencies>
-    <releaseNotes>* NEW: Added support for "dotnet tool" @nefarius
-		* FIX: Fixed typo in installer @nefarius
-		* CHANGE: Updated NuGet.Commandline (used only in IDE)
+    <releaseNotes>* FIX: Installer parsed wrong version as latest
 	</releaseNotes>
   </metadata>
   <files>

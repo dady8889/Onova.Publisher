@@ -283,7 +283,7 @@ bool ParseManifest(string manifestUrl, ManifestMap& manifestMap)
 
 		string url = line.substr(firstPos + 1, secondPos - 1);
 
-		manifestMap.insert(pair<string, string>(version, url));
+		manifestMap.push_back(pair<string, string>(version, url));
 	}
 
 	return true;

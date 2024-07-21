@@ -1,6 +1,6 @@
 {
   "name": "onova-installer",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "Provides publishing support for applications using Onova.",
   "license": "MIT",
   "supports": "!(arm | uwp)",
